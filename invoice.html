@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Invoice</title>
+
+<style>
+body{
+    font-family:"Segoe UI",Arial,sans-serif;
+    background:#eef1f5;
+    padding:30px
+}
+.invoice-box{
+    max-width:1000px;
+    margin:auto;
+    background:#fff;
+    padding:35px;
+    border-radius:6px;
+    box-shadow:0 0 15px rgba(0,0,0,.08)
+}
+
+/* HEADER */
+.company-header{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    border-bottom:2px solid #2c3e50;
+    padding-bottom:20px;
+    margin-bottom:25px
+}
+.company-text p{
+    margin:4px 0;
+    font-size:14px
+}
+.logo{width:150px}
+
+/* INFO ROW */
+.info-row{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:30px;
+    margin-bottom:25px
+}
+.info-box h4{
+    margin-bottom:8px;
+    color:#2c3e50
+}
+.invoice-info table{
+    width:100%;
+    border-collapse:collapse
+}
+.invoice-info td{padding:6px}
+
+/* INPUTS */
+input{
+    padding:7px;
+    border:1px solid #ccc;
+    font-size:14px;
+    border-radius:3px;
+    width:100%
+}
+
+/* TABLE */
+table{
+    width:100%;
+    border-collapse:collapse
+}
+th{
+    background:#2c3e50;
+    color:#fff;
+    padding:10px;
+    font-weight:bold
+}
+td{
+    padding:8px;
+    border-bottom:1px solid #ddd
+}
+.total-box{
+    text-align:right;
+    border:none;
+    font-weight:bold;
+    background:transparent
+}
+.no-break{white-space:nowrap}
+
+/* BUTTONS */
+button{
+    padding:8px 14px;
+    background:#2c3e50;
+    color:#fff;
+    border:none;
+    border-radius:3px;
+    cursor:pointer
+}
+.remove-btn{background:#c0392b}
+
+/* PRINT */
+@media print{
+    .action-col,.action-col *{display:none!important}
+    button{display:none}
+    input{border:none}
+}
+</style>
+</head>
+
+<body>
+
+<div class="invoice-box">
+
+<!-- COMPANY HEADER -->
+<div class="company-header">
+    <div class="company-text">
+        <p><strong>HTM Technology</strong></p>
+        <p>Halishahar R/A, Sonali Tower, 6th Floor</p>
+        <p>Email: htmtechnologyltd@gmail.com</p>
+        <p>Cell: +8801820189876</p>
+    </div>
+    <img src="htm.png" class="logo">
+</div>
+
+<!-- BILLED + INVOICE INFO -->
+<div class="info-row">
+
+    <div class="info-box">
+        <h4>Billed To</h4>
+        <input placeholder="Customer Name"><br><br>
+        <input placeholder="Customer Address"><br><br>
+        <input placeholder="Customer Phone">
+    </div>
+
+    <div class="info-box invoice-info">
+        <h4>Invoice Details</h4>
+        <table>
+            <tr>
+                <td><strong>Invoice No</strong></td>
+                <td id="invoiceNo"></td>
+            </tr>
+            <tr>
+                <td><strong>Bill Date</strong></td>
+                <td><input type="date" id="billDate"></td>
+            </tr>
+            <tr>
+                <td><strong>Due Date</strong></td>
+                <td><input type="date" id="dueDate"></td>
+            </tr>
+        </table>
+    </div>
+
+</div>
+
+<!-- ITEMS -->
+<table id="invoiceTable">
+<thead>
+<tr>
+    <th>#</th>
+    <th>Description</th>
+    <th>Price</th>
+    <th>Qty</th>
+    <th>Total</th>
+    <th class="action-col">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td class="sl">1</td>
+    <td><input placeholder="Item description"></td>
+    <td><input type="number" class="price" oninput="calc()"></td>
+    <td><input type="number" class="qty" oninput="calc()"></td>
+    <td><input class="total-box row-total" readonly></td>
+    <td class="action-col">
+        <button class="remove-btn" onclick="removeRow(this)">X</button>
+    </td>
+</tr>
+</tbody>
+</table>
+
+<br>
+<button onclick="addRow()">➕ Add New Row</button>
+
+<!-- TOTALS -->
+<table style="width:100%;margin-top:20px">
+<tr>
+    <td style="width:55%;vertical-align:top">
+        <em>This is software generated bill</em>
+    </td>
+    <td style="width:45%">
+        <table style="width:100%">
+            <tr>
+                <td class="no-break"><strong>Grand Total</strong></td>
+                <td class="total-box" id="grandTotal"></td>
+            </tr>
+            <tr>
+                <td colspan="2" id="grandWords" style="font-style:italic"></td>
+            </tr>
+        </table>
+    </td>
+</tr>
+</table>
+
+<div style="margin-top:30px;text-align:center;color:#666">
+    Thank you for your business!<br>
+    <button onclick="window.print()">Print Invoice</button>
+</div>
+
+</div>
+
+<script>
+function pad(n){return n.toString().padStart(2,'0')}
+function generateInvoiceNo(){
+    const d=new Date();
+    return `${d.getFullYear()}-${pad(d.getMonth()+1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`
+}
+
+window.onload=function(){
+    invoiceNo.textContent=generateInvoiceNo();
+    const t=new Date();
+    const d=new Date();d.setDate(t.getDate()+7);
+    billDate.value=t.toISOString().split('T')[0];
+    dueDate.value=d.toISOString().split('T')[0];
+}
+
+function addRow(){
+    let r=invoiceTable.tBodies[0].insertRow();
+    r.innerHTML=`
+    <td class="sl"></td>
+    <td><input placeholder="Item description"></td>
+    <td><input type="number" class="price" oninput="calc()"></td>
+    <td><input type="number" class="qty" oninput="calc()"></td>
+    <td><input class="total-box row-total" readonly></td>
+    <td class="action-col"><button class="remove-btn" onclick="removeRow(this)">X</button></td>`;
+    updateSerial()
+}
+
+function removeRow(b){
+    b.closest("tr").remove();
+    updateSerial();calc()
+}
+
+function updateSerial(){
+    document.querySelectorAll(".sl").forEach((t,i)=>t.textContent=i+1)
+}
+
+function numberToWords(n){
+    const a=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
+    const b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
+    if(n===0)return'Zero';
+    if(n<20)return a[n];
+    if(n<100)return b[Math.floor(n/10)]+' '+a[n%10];
+    if(n<1000)return a[Math.floor(n/100)]+' Hundred '+numberToWords(n%100);
+    if(n<1000000)return numberToWords(Math.floor(n/1000))+' Thousand '+numberToWords(n%1000);
+    return''
+}
+
+function calc(){
+    let total=0;
+    document.querySelectorAll(".price").forEach((p,i)=>{
+        let q=document.querySelectorAll(".qty")[i].value||0;
+        let t=p.value*q;
+        document.querySelectorAll(".row-total")[i].value=t.toFixed(2);
+        total+=t
+    });
+    grandTotal.textContent=total.toFixed(2);
+    grandWords.textContent="In Words: "+numberToWords(Math.floor(total))+" Taka Only";
+}
+</script>
+
+</body>
+</html>
