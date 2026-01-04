@@ -98,6 +98,16 @@ td{
     vertical-align:top;
 }
 
+/* currency display */
+.currency{
+    display:flex;
+    align-items:center;
+    gap:4px;
+}
+.currency span{
+    font-weight:bold;
+}
+
 /* BUTTONS */
 button{
     padding:8px 14px;
@@ -109,31 +119,18 @@ button{
 }
 .remove-btn{ background:#c0392b; }
 
-/* PRINT – PERFECT BEHAVIOR */
+/* PRINT */
 @media print{
-    /* hide action column cells */
     th.action-col,
-    td.action-col{
-        display:none !important;
-    }
+    td.action-col{ display:none!important; }
 
-    /* collapse action column width */
-    col.action-col{
-        width:0 !important;
-    }
+    col.action-col{ width:0!important; }
 
-    /* hide all buttons */
-    button{
-        display:none !important;
-    }
+    button{ display:none!important; }
 
-    input, textarea{
-        border:none;
-    }
+    input, textarea{ border:none; }
 
-    body{
-        background:#fff;
-    }
+    body{ background:#fff; }
 }
 </style>
 </head>
@@ -188,9 +185,9 @@ button{
 <tr>
     <th>#</th>
     <th>Description</th>
-    <th>Price (BDT)</th>
+    <th>Price (৳)</th>
     <th>Qty</th>
-    <th>Total (BDT)</th>
+    <th>Total (৳)</th>
     <th class="action-col">Action</th>
 </tr>
 </thead>
@@ -198,9 +195,23 @@ button{
 <tr>
     <td class="sl" style="text-align:center">1</td>
     <td><textarea placeholder="Item description"></textarea></td>
-    <td><input type="number" class="price" oninput="calc()"></td>
+
+    <td>
+        <div class="currency">
+            <span>৳</span>
+            <input type="number" class="price" oninput="calc()">
+        </div>
+    </td>
+
     <td><input type="number" class="qty" oninput="calc()"></td>
-    <td><input class="row-total" readonly></td>
+
+    <td>
+        <div class="currency">
+            <span>৳</span>
+            <input class="row-total" readonly>
+        </div>
+    </td>
+
     <td class="action-col" style="text-align:center">
         <button class="remove-btn" onclick="removeRow(this)">X</button>
     </td>
@@ -215,7 +226,7 @@ button{
 <table style="margin-top:20px">
 <tr>
     <td style="width:55%">
-        <textarea id="noteText">This is software generated bill
+        <textarea>This is software generated bill
 
 Thank you for your cooperation.</textarea>
     </td>
@@ -223,7 +234,7 @@ Thank you for your cooperation.</textarea>
         <table>
             <tr>
                 <td><strong>Grand Total</strong></td>
-                <td id="grandTotal"></td>
+                <td><strong>৳ <span id="grandTotal"></span></strong></td>
             </tr>
             <tr>
                 <td colspan="2" id="grandWords"></td>
@@ -255,17 +266,38 @@ window.onload=function(){
     dueDate.value=t.toISOString().split('T')[0];
 }
 
+/* NUMBER TO WORDS WITH PAISA */
+function numberToWords(amount){
+    const ones=["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten",
+                "Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+    const tens=["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+
+    function convert(n){
+        if(n<20) return ones[n];
+        if(n<100) return tens[Math.floor(n/10)] + (n%10?" "+ones[n%10]:"");
+        if(n<1000) return ones[Math.floor(n/100)]+" Hundred"+(n%100?" "+convert(n%100):"");
+        if(n<1000000) return convert(Math.floor(n/1000))+" Thousand"+(n%1000?" "+convert(n%1000):"");
+        return "";
+    }
+
+    let taka = Math.floor(amount);
+    let paisa = Math.round((amount - taka) * 100);
+
+    let words = convert(taka) + " Taka";
+    if(paisa > 0) words += " and " + convert(paisa) + " Paisa";
+
+    return words + " Only";
+}
+
 function addRow(){
     let r=invoiceTable.tBodies[0].insertRow();
     r.innerHTML=`
     <td class="sl"></td>
     <td><textarea placeholder="Item description"></textarea></td>
-    <td><input type="number" class="price" oninput="calc()"></td>
+    <td><div class="currency"><span>৳</span><input type="number" class="price" oninput="calc()"></div></td>
     <td><input type="number" class="qty" oninput="calc()"></td>
-    <td><input class="row-total" readonly></td>
-    <td class="action-col">
-        <button class="remove-btn" onclick="removeRow(this)">X</button>
-    </td>`;
+    <td><div class="currency"><span>৳</span><input class="row-total" readonly></div></td>
+    <td class="action-col"><button class="remove-btn" onclick="removeRow(this)">X</button></td>`;
     updateSerial();
 }
 
@@ -287,8 +319,9 @@ function calc(){
         document.querySelectorAll(".row-total")[i].value=t.toFixed(2);
         total+=t;
     });
-    grandTotal.textContent=total.toFixed(2);
-    grandWords.textContent="In Words: "+Math.floor(total)+" BDT Only";
+
+    grandTotal.textContent = total.toFixed(2);
+    grandWords.textContent = "In Words: " + numberToWords(total);
 }
 </script>
 
