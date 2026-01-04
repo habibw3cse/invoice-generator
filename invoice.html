@@ -109,12 +109,31 @@ button{
 }
 .remove-btn{ background:#c0392b; }
 
-/* PRINT */
+/* PRINT – PERFECT BEHAVIOR */
 @media print{
-    .action-col,.action-col *{ display:none!important; }
-    button{ display:none; }
-    input, textarea{ border:none; }
-    body{ background:#fff; }
+    /* hide action column cells */
+    th.action-col,
+    td.action-col{
+        display:none !important;
+    }
+
+    /* collapse action column width */
+    col.action-col{
+        width:0 !important;
+    }
+
+    /* hide all buttons */
+    button{
+        display:none !important;
+    }
+
+    input, textarea{
+        border:none;
+    }
+
+    body{
+        background:#fff;
+    }
 }
 </style>
 </head>
@@ -158,12 +177,12 @@ button{
 <!-- ITEMS TABLE -->
 <table id="invoiceTable">
 <colgroup>
-    <col style="width:8%">
-    <col style="width:45%">
-    <col style="width:15%">
-    <col style="width:8%">
-    <col style="width:17%">
     <col style="width:7%">
+    <col style="width:45%">
+    <col style="width:12%">
+    <col style="width:12%">
+    <col style="width:17%">
+    <col class="action-col" style="width:7%">
 </colgroup>
 <thead>
 <tr>
@@ -196,12 +215,9 @@ button{
 <table style="margin-top:20px">
 <tr>
     <td style="width:55%">
-        <textarea
-            id="noteText">This is software generated bill
-			
-			
-			Thank you for your cooperation.
-			</textarea>
+        <textarea id="noteText">This is software generated bill
+
+Thank you for your cooperation.</textarea>
     </td>
     <td style="width:45%">
         <table>
