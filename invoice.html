@@ -6,7 +6,6 @@
 <link rel="icon" href="favicon.ico" type="image/x-icon">
 
 <style>
-/* ================= BASE ================= */
 *{ box-sizing:border-box; }
 
 body{
@@ -15,9 +14,9 @@ body{
     padding:30px;
 }
 
-/* ================= HTM TEXT WATERMARK (CENTER FIXED) ================= */
+/* WATERMARK */
 .watermark-text{
-    position: fixed;   /* stays center always */
+    position: fixed;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%) rotate(-30deg);
@@ -26,81 +25,62 @@ body{
     color: #000;
     opacity: 0.05;
     letter-spacing: 10px;
-    white-space: nowrap;
     pointer-events: none;
-    z-index: 0;
 }
 
-/* ================= INVOICE BOX ================= */
+/* INVOICE BOX */
 .invoice-box{
-    position:relative;
     max-width:1000px;
     margin:auto;
     background:#fff;
     padding:35px;
     border-radius:6px;
     box-shadow:0 0 15px rgba(0,0,0,.08);
-    overflow:hidden;
-    z-index:1;
 }
 
-/* ================= HEADER ================= */
+/* HEADER */
 .company-header{
     display:flex;
     justify-content:space-between;
-    align-items:flex-start;
     border-bottom:3px solid #2c3e50;
     padding-bottom:20px;
     margin-bottom:25px;
 }
-.company-text p{
-    margin:4px 0;
-    font-size:14px;
-}
-.logo{
-    width:150px;
-}
+.logo{ width:150px; }
 
-/* ================= INFO ROW ================= */
+/* INFO ROW */
 .info-row{
     display:grid;
     grid-template-columns:1fr 1fr;
     gap:30px;
     margin-bottom:25px;
 }
-.info-box h4{
-    margin-bottom:8px;
-    color:#2c3e50;
-}
-
-/* invoice details table fix */
 .invoice-info table{
     width:100%;
-    table-layout:fixed;
     border-collapse:collapse;
     border:2px solid #2c3e50;
 }
 .invoice-info td{
-    width:50%;
     padding:6px;
     border:1px solid #2c3e50;
 }
 
-/* ================= INPUT FIX ================= */
-input{
+/* INPUTS */
+input, textarea{
     width:100%;
-    max-width:100%;
     padding:6px;
     border:1px solid #777;
     font-size:14px;
     border-radius:3px;
+    font-family:"Segoe UI", Arial, sans-serif;
 }
-input[type="date"]{
-    height:30px;
-    font-size:13px;
+textarea{
+    min-height:60px;
+    resize:vertical;
+    font-style:italic;
 }
 
-/* ================= MAIN TABLE ================= */
+/* MAIN TABLE */
 table{
     width:100%;
     border-collapse:collapse;
@@ -110,29 +90,15 @@ th{
     background:#2c3e50;
     color:#fff;
     padding:10px;
-    font-weight:bold;
-    border:2px solid #2c3e50;
     text-align:center;
 }
 td{
     padding:8px;
     border:2px solid #2c3e50;
+    vertical-align:top;
 }
 
-/* row highlight */
-tbody tr{ background:#f9fbfd; }
-tbody tr:nth-child(even){ background:#e9eef3; }
-
-/* totals */
-.total-box{
-    text-align:right;
-    border:none;
-    font-weight:bold;
-    background:transparent;
-}
-.no-break{ white-space:nowrap; }
-
-/* ================= BUTTONS ================= */
+/* BUTTONS */
 button{
     padding:8px 14px;
     background:#2c3e50;
@@ -141,15 +107,13 @@ button{
     border-radius:3px;
     cursor:pointer;
 }
-.remove-btn{
-    background:#c0392b;
-}
+.remove-btn{ background:#c0392b; }
 
-/* ================= PRINT ================= */
+/* PRINT */
 @media print{
     .action-col,.action-col *{ display:none!important; }
     button{ display:none; }
-    input{ border:none; }
+    input, textarea{ border:none; }
     body{ background:#fff; }
 }
 </style>
@@ -157,105 +121,105 @@ button{
 
 <body>
 
-<!-- HTM TEXT WATERMARK -->
 <div class="watermark-text">HTM</div>
 
 <div class="invoice-box">
 
-    <!-- COMPANY HEADER -->
-    <div class="company-header">
-        <div class="company-text">
-            <p><strong>HTM Technology</strong></p>
-            <p>Halishahar R/A, Sonali Tower, 6th Floor</p>
-            <p>Email: htmtechnologyltd@gmail.com</p>
-            <p>Cell: +8801820189876</p>
-        </div>
-        <img src="htm.png" class="logo">
+<!-- HEADER -->
+<div class="company-header">
+    <div>
+        <p><strong>HTM Technology</strong></p>
+        <p>Halishahar R/A, Sonali Tower, 6th Floor</p>
+        <p>Email: htmtechnologyltd@gmail.com</p>
+        <p>Cell: +8801820189876</p>
+    </div>
+    <img src="htm.png" class="logo">
+</div>
+
+<!-- INFO -->
+<div class="info-row">
+    <div>
+        <h4>Billed To</h4>
+        <input placeholder="Customer Name"><br><br>
+        <input placeholder="Customer Address"><br><br>
+        <input placeholder="Customer Phone">
     </div>
 
-    <!-- BILLED + INVOICE INFO -->
-    <div class="info-row">
-
-        <div class="info-box">
-            <h4>Billed To</h4>
-            <input placeholder="Customer Name"><br><br>
-            <input placeholder="Customer Address"><br><br>
-            <input placeholder="Customer Phone">
-        </div>
-
-        <div class="info-box invoice-info">
-            <h4>Invoice Details</h4>
-            <table>
-                <tr>
-                    <td><strong>Invoice No</strong></td>
-                    <td id="invoiceNo"></td>
-                </tr>
-                <tr>
-                    <td><strong>Bill Date</strong></td>
-                    <td><input type="date" id="billDate"></td>
-                </tr>
-                <tr>
-                    <td><strong>Due Date</strong></td>
-                    <td><input type="date" id="dueDate"></td>
-                </tr>
-            </table>
-        </div>
-
+    <div class="invoice-info">
+        <h4>Invoice Details</h4>
+        <table>
+            <tr><td><strong>Invoice No</strong></td><td id="invoiceNo"></td></tr>
+            <tr><td><strong>Bill Date</strong></td><td><input type="date" id="billDate"></td></tr>
+            <tr><td><strong>Due Date</strong></td><td><input type="date" id="dueDate"></td></tr>
+        </table>
     </div>
+</div>
 
-    <!-- ITEMS TABLE -->
-    <table id="invoiceTable">
-        <thead>
-        <tr>
-            <th>#</th>
-            <th>Description</th>
-            <th>Price (BDT)</th>
-            <th>Qty</th>
-            <th>Total (BDT)</th>
-            <th class="action-col">Action</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td class="sl" style="text-align:center">1</td>
-            <td><input placeholder="Item description"></td>
-            <td><input type="number" class="price" oninput="calc()"></td>
-            <td><input type="number" class="qty" oninput="calc()"></td>
-            <td><input class="total-box row-total" readonly></td>
-            <td class="action-col" style="text-align:center">
-                <button class="remove-btn" onclick="removeRow(this)">X</button>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+<!-- ITEMS TABLE -->
+<table id="invoiceTable">
+<colgroup>
+    <col style="width:8%">
+    <col style="width:45%">
+    <col style="width:15%">
+    <col style="width:8%">
+    <col style="width:17%">
+    <col style="width:7%">
+</colgroup>
+<thead>
+<tr>
+    <th>#</th>
+    <th>Description</th>
+    <th>Price (BDT)</th>
+    <th>Qty</th>
+    <th>Total (BDT)</th>
+    <th class="action-col">Action</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+    <td class="sl" style="text-align:center">1</td>
+    <td><textarea placeholder="Item description"></textarea></td>
+    <td><input type="number" class="price" oninput="calc()"></td>
+    <td><input type="number" class="qty" oninput="calc()"></td>
+    <td><input class="row-total" readonly></td>
+    <td class="action-col" style="text-align:center">
+        <button class="remove-btn" onclick="removeRow(this)">X</button>
+    </td>
+</tr>
+</tbody>
+</table>
 
-    <br>
-    <button onclick="addRow()">➕ Add New Row</button>
+<br>
+<button onclick="addRow()">➕ Add New Row</button>
 
-    <!-- TOTALS -->
-    <table style="margin-top:20px">
-        <tr>
-            <td style="width:55%;vertical-align:top">
-                <em>This is software generated bill</em>
-            </td>
-            <td style="width:45%">
-                <table>
-                    <tr>
-                        <td class="no-break"><strong>Grand Total</strong></td>
-                        <td class="total-box" id="grandTotal"></td>
-                    </tr>
-                    <tr>
-                        <td colspan="2" id="grandWords" style="font-style:italic"></td>
-                    </tr>
-                </table>
-            </td>
-        </tr>
-    </table>
+<!-- TOTAL + NOTE -->
+<table style="margin-top:20px">
+<tr>
+    <td style="width:55%">
+        <textarea
+            id="noteText">This is software generated bill
+			
+			
+			Thank you for your cooperation.
+			</textarea>
+    </td>
+    <td style="width:45%">
+        <table>
+            <tr>
+                <td><strong>Grand Total</strong></td>
+                <td id="grandTotal"></td>
+            </tr>
+            <tr>
+                <td colspan="2" id="grandWords"></td>
+            </tr>
+        </table>
+    </td>
+</tr>
+</table>
 
-    <div style="margin-top:30px;text-align:center;color:#666">
-        Thank you for your business!<br>
-        <button onclick="window.print()">Print Invoice</button>
-    </div>
+<div style="margin-top:30px;text-align:center">
+    <button onclick="window.print()">Print Invoice</button>
+</div>
 
 </div>
 
@@ -269,24 +233,23 @@ function generateInvoiceNo(){
 
 window.onload=function(){
     invoiceNo.textContent=generateInvoiceNo();
-    const today=new Date();
-    const due=new Date();
-    due.setDate(today.getDate()+7);
-    billDate.value=today.toISOString().split('T')[0];
-    dueDate.value=due.toISOString().split('T')[0];
+    const t=new Date();
+    billDate.value=t.toISOString().split('T')[0];
+    t.setDate(t.getDate()+7);
+    dueDate.value=t.toISOString().split('T')[0];
 }
 
 function addRow(){
     let r=invoiceTable.tBodies[0].insertRow();
     r.innerHTML=`
-        <td class="sl" style="text-align:center"></td>
-        <td><input placeholder="Item description"></td>
-        <td><input type="number" class="price" oninput="calc()"></td>
-        <td><input type="number" class="qty" oninput="calc()"></td>
-        <td><input class="total-box row-total" readonly></td>
-        <td class="action-col" style="text-align:center">
-            <button class="remove-btn" onclick="removeRow(this)">X</button>
-        </td>`;
+    <td class="sl"></td>
+    <td><textarea placeholder="Item description"></textarea></td>
+    <td><input type="number" class="price" oninput="calc()"></td>
+    <td><input type="number" class="qty" oninput="calc()"></td>
+    <td><input class="row-total" readonly></td>
+    <td class="action-col">
+        <button class="remove-btn" onclick="removeRow(this)">X</button>
+    </td>`;
     updateSerial();
 }
 
@@ -297,17 +260,7 @@ function removeRow(btn){
 }
 
 function updateSerial(){
-    document.querySelectorAll(".sl").forEach((td,i)=>td.textContent=i+1);
-}
-
-function numberToWords(n){
-    const a=['','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten','Eleven','Twelve','Thirteen','Fourteen','Fifteen','Sixteen','Seventeen','Eighteen','Nineteen'];
-    const b=['','','Twenty','Thirty','Forty','Fifty','Sixty','Seventy','Eighty','Ninety'];
-    if(n<20) return a[n];
-    if(n<100) return b[Math.floor(n/10)]+' '+a[n%10];
-    if(n<1000) return a[Math.floor(n/100)]+' Hundred '+numberToWords(n%100);
-    if(n<1000000) return numberToWords(Math.floor(n/1000))+' Thousand '+numberToWords(n%1000);
-    return '';
+    document.querySelectorAll(".sl").forEach((s,i)=>s.textContent=i+1);
 }
 
 function calc(){
@@ -319,7 +272,7 @@ function calc(){
         total+=t;
     });
     grandTotal.textContent=total.toFixed(2);
-    grandWords.textContent="In Words: "+numberToWords(Math.floor(total))+" BDT Only";
+    grandWords.textContent="In Words: "+Math.floor(total)+" BDT Only";
 }
 </script>
 
