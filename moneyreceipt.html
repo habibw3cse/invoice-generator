@@ -107,21 +107,13 @@ input, select{
     display:none;
 }
 
-/* ================= SIGNATURE ================= */
-.signature{
-    display:flex;
-    justify-content:flex-end; /* RIGHT SIDE ONLY */
-    margin-top:50px;
-}
-
-.sign-box{
-    width:45%;
+/* ================= FOOTER NOTE ================= */
+.auto-note{
+    margin-top:40px;
     text-align:center;
-}
-
-.sign-line{
-    border-top:1px solid #000;
-    padding-top:5px;
+    font-size:13px;
+    font-style:italic;
+    color:#333;
 }
 
 /* ================= PRINT ================= */
@@ -199,29 +191,24 @@ input, select{
 
 <div class="section">
     <span class="label">Payment Method:</span>
-
     <select id="paymentMethod">
         <option>Cash</option>
         <option>Bank Transfer</option>
         <option>Mobile Banking</option>
         <option>Cheque</option>
     </select>
-
     <span class="print-text" id="paymentPrint"></span>
 </div>
 
 <div class="section">
     <span class="label">Purpose:</span>
-
     <input type="text" id="purpose" value="Invoice Payment">
     <span class="print-text" id="purposePrint"></span>
 </div>
 
-<!-- ================= SIGNATURE ================= -->
-<div class="signature">
-    <div class="sign-box">
-        <div class="sign-line">Received By</div>
-    </div>
+<!-- ================= AUTOMATED NOTE ================= -->
+<div class="auto-note">
+    This is a software automated receipt. Invoice does not require any signature.
 </div>
 
 </div>
@@ -234,11 +221,16 @@ input, select{
 
 <script>
 function pad(n){ return n.toString().padStart(2,"0"); }
-const d=new Date();
+const d = new Date();
 
+/* DATE FORMAT: MMM, DD YYYY */
+const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+receiptDate.textContent =
+    months[d.getMonth()] + ", " + pad(d.getDate()) + " " + d.getFullYear();
+
+/* RECEIPT NO */
 receiptNo.textContent =
     "MR-" + pad(d.getDate()) + pad(d.getMonth()+1) + d.getFullYear() + pad(d.getSeconds());
-receiptDate.textContent = d.toLocaleDateString();
 
 /* NUMBER TO WORDS */
 function numberToWords(n){
