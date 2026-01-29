@@ -3,326 +3,350 @@
 <head>
 <meta charset="UTF-8">
 <title>Invoice</title>
-<link rel="icon" href="favicon.ico" type="image/x-icon">
 
 <style>
 *{ box-sizing:border-box; }
 
 body{
-    font-family:"Segoe UI", Arial, sans-serif;
-    background:#eef1f5;
-    padding:30px;
+    font-family: Arial, sans-serif;
+    background:#f2f2f2;
+    padding:20px;
 }
 
-/* WATERMARK */
-.watermark-text{
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) rotate(-30deg);
-    font-size: 120px;
-    font-weight: 800;
-    color: #000;
-    opacity: 0.05;
-    letter-spacing: 10px;
-    pointer-events: none;
-}
-
-/* INVOICE BOX */
-.invoice-box{
+.invoice{
     max-width:1000px;
     margin:auto;
     background:#fff;
-    padding:35px;
-    border-radius:6px;
-    box-shadow:0 0 15px rgba(0,0,0,.08);
+    padding:25px;
 }
 
-/* HEADER */
+/* ================= HEADER ================= */
 .company-header{
-    display:flex;
-    justify-content:space-between;
-    border-bottom:3px solid #2c3e50;
-    padding-bottom:20px;
-    margin-bottom:25px;
-}
-.logo{ width:150px; }
-
-/* INFO ROW */
-.info-row{
     display:grid;
     grid-template-columns:1fr 1fr;
-    gap:30px;
-    margin-bottom:25px;
-}
-.invoice-info table{
-    width:100%;
-    border-collapse:collapse;
-    border:2px solid #2c3e50;
-}
-.invoice-info td{
-    padding:6px;
-    border:1px solid #2c3e50;
+    border-bottom:3px solid #000;
+    padding-bottom:15px;
+    margin-bottom:20px;
 }
 
-/* INPUTS */
-input, textarea{
-    width:100%;
-    padding:6px;
-    border:1px solid #777;
-    font-size:14px;
-    border-radius:3px;
-    font-family:"Segoe UI", Arial, sans-serif;
-}
-textarea{
-    min-height:60px;
-    resize:vertical;
-    font-style:italic;
-}
-
-/* MAIN TABLE */
-table{
-    width:100%;
-    border-collapse:collapse;
-    border:3px solid #2c3e50;
-}
-th{
-    background:#2c3e50;
-    color:#fff;
-    padding:10px;
-    text-align:center;
-}
-td{
-    padding:8px;
-    border:2px solid #2c3e50;
-    vertical-align:top;
-}
-
-/* currency display */
-.currency{
+.company-left{
     display:flex;
-    align-items:center;
-    gap:4px;
+    gap:15px;
 }
-.currency span{
+
+.company-logo{
+    width:80px;
+}
+
+.company-info{
+    font-size:14px;
+    line-height:1.5;
+}
+
+.company-name{
+    font-size:22px;
     font-weight:bold;
 }
 
-/* BUTTONS */
+.company-right{
+    text-align:right;
+    font-size:14px;
+}
+
+.invoice-title{
+    font-size:28px;
+    font-weight:bold;
+    margin-bottom:10px;
+}
+
+/* Invoice meta alignment */
+.invoice-meta{
+    display:grid;
+    grid-template-columns:auto 160px;
+    gap:6px 10px;
+    justify-content:end;
+    align-items:center;
+}
+
+.meta-label{
+    text-align:right;
+}
+
+.meta-value{
+    height:32px;
+    display:flex;
+    align-items:center;
+}
+
+.meta-value input{
+    height:32px;
+    padding:2px 6px;
+    font-size:14px;
+}
+
+/* ================= BILLED TO ================= */
+.billed-to{
+    margin-bottom:20px;
+    font-size:14px;
+}
+
+.billed-to-title{
+    font-weight:bold;
+    margin-bottom:6px;
+}
+
+.bill-text{
+    min-height:18px;
+    margin-bottom:4px;
+}
+
+.bill-text[contenteditable]:focus{
+    outline:1px dashed #888;
+}
+
+/* ================= TABLE ================= */
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th, td{
+    border:1px solid #000;
+    padding:8px;
+    vertical-align:top;
+}
+
+th{
+    background:#333;
+    color:#fff;
+}
+
+textarea, input{
+    width:100%;
+    font-size:14px;
+}
+
+/* ================= BUTTON ================= */
 button{
+    margin-top:10px;
     padding:8px 14px;
-    background:#2c3e50;
+    background:#333;
     color:#fff;
     border:none;
-    border-radius:3px;
     cursor:pointer;
 }
-.remove-btn{ background:#c0392b; }
 
-/* PRINT */
+/* ================= PRINT ================= */
+#printTable{ display:none; }
+
 @media print{
-    th.action-col,
-    td.action-col{ display:none!important; }
+    #screenTable,
+    button{ display:none !important; }
 
-    col.action-col{ width:0!important; }
+    #printTable{ display:table !important; }
 
-    button{ display:none!important; }
+    thead th{
+        background:#eaeaea !important;
+        color:#000 !important;
+        font-weight:bold !important;
+        -webkit-print-color-adjust:exact;
+        print-color-adjust:exact;
+    }
 
-    input, textarea{ border:none; }
+    input[type="date"]{
+        border:none;
+        background:transparent;
+        padding:0;
+        height:auto;
+    }
 
-    body{ background:#fff; }
+    .print-comments{
+        white-space:pre-wrap;
+    }
+
+    [contenteditable]{
+        outline:none !important;
+    }
 }
 </style>
 </head>
 
 <body>
 
-<div class="watermark-text">HTM</div>
+<div class="invoice">
 
-<div class="invoice-box">
-
-<!-- HEADER -->
+<!-- ================= HEADER ================= -->
 <div class="company-header">
-    <div>
-        <p><strong>HTM Technology</strong></p>
-        <p>Halishahar R/A, Sonali Tower, 6th Floor</p>
-        <p>Email: htmtechnologyltd@gmail.com</p>
-        <p>Cell: +8801820189876</p>
-    </div>
-    <img src="htm.png" class="logo">
-</div>
-
-<!-- INFO -->
-<div class="info-row">
-    <div>
-        <h4>Billed To</h4>
-        <input placeholder="Customer Name"><br><br>
-        <input placeholder="Customer Address"><br><br>
-        <input placeholder="Customer Phone">
+    <div class="company-left">
+        <img src="htm.png" class="company-logo" alt="Logo">
+        <div class="company-info">
+            <div class="company-name">HTM Technology</div>
+            <div>Halishahar R/A</div>
+			 <div>Sonali Tower, 6th Floor</div>
+            <div>Chattogram, Bangladesh</div>
+            <div>Phone: +8801820189876</div>
+            <div>Email: htmtechnologyltd@gmail.com</div>
+        </div>
     </div>
 
-    <div class="invoice-info">
-        <h4>Invoice Details</h4>
-        <table>
-            <tr><td><strong>Invoice No</strong></td><td id="invoiceNo"></td></tr>
-            <tr><td><strong>Bill Date</strong></td><td><input type="date" id="billDate"></td></tr>
-            <tr><td><strong>Due Date</strong></td><td><input type="date" id="dueDate"></td></tr>
-        </table>
+    <div class="company-right">
+        <div class="invoice-title">INVOICE</div>
+        <div class="invoice-meta">
+            <div class="meta-label">Invoice No:</div>
+            <div class="meta-value"><strong id="invoiceNo"></strong></div>
+
+            <div class="meta-label">Date:</div>
+            <div class="meta-value">
+                <input type="date" id="invoiceDate">
+            </div>
+        </div>
     </div>
 </div>
 
-<!-- ITEMS TABLE -->
-<table id="invoiceTable">
-<colgroup>
-    <col style="width:7%">
-    <col style="width:45%">
-    <col style="width:12%">
-    <col style="width:12%">
-    <col style="width:17%">
-    <col class="action-col" style="width:7%">
-</colgroup>
+<!-- ================= BILLED TO ================= -->
+<div class="billed-to">
+    <div class="billed-to-title">Billed To</div>
+    <div class="bill-text" contenteditable="true">Customer Name</div>
+    <div class="bill-text" contenteditable="true">Customer Address</div>
+    <div class="bill-text" contenteditable="true">Customer Phone</div>
+</div>
+
+<!-- ================= SCREEN TABLE ================= -->
+<table id="screenTable">
 <thead>
 <tr>
     <th>#</th>
     <th>Description</th>
-    <th>Price (৳)</th>
+    <th>Price</th>
     <th>Qty</th>
-    <th>Total (৳)</th>
-    <th class="action-col">Action</th>
+    <th>Total</th>
+    <th>Action</th>
 </tr>
 </thead>
-<tbody>
+
+<tbody></tbody>
+
+<tfoot>
 <tr>
-    <td class="sl" style="text-align:center">1</td>
-    <td><textarea placeholder="Item description"></textarea></td>
-
-    <td>
-        <div class="currency">
-            <span>৳</span>
-            <input type="number" class="price" oninput="calc()">
-        </div>
-    </td>
-
-    <td><input type="number" class="qty" oninput="calc()"></td>
-
-    <td>
-        <div class="currency">
-            <span>৳</span>
-            <input class="row-total" readonly>
-        </div>
-    </td>
-
-    <td class="action-col" style="text-align:center">
-        <button class="remove-btn" onclick="removeRow(this)">X</button>
-    </td>
+    <td colspan="4" align="right"><strong>Grand Total</strong></td>
+    <td id="screenGrand">0.00</td>
+    <td></td>
 </tr>
-</tbody>
+<tr>
+    <td colspan="6" id="screenWords"></td>
+</tr>
+<tr>
+<td colspan="6">
+<strong>Comments</strong><br>
+<textarea id="comments">
+This is software generated bill
+
+Thank you for your cooperation.
+</textarea>
+</td>
+</tr>
+</tfoot>
 </table>
 
-<br>
-<button onclick="addRow()">➕ Add New Row</button>
+<button onclick="addRow()">➕ Add Row</button>
+<button onclick="preparePrint()">🖨 Print</button>
 
-<!-- TOTAL + NOTE -->
-<table style="margin-top:20px">
+<!-- ================= PRINT TABLE ================= -->
+<table id="printTable">
+<thead>
 <tr>
-    <td style="width:55%">
-        <textarea>This is software generated bill
-
-Thank you for your cooperation.</textarea>
-    </td>
-    <td style="width:45%">
-        <table>
-            <tr>
-                <td><strong>Grand Total</strong></td>
-                <td><strong>৳ <span id="grandTotal"></span></strong></td>
-            </tr>
-            <tr>
-                <td colspan="2" id="grandWords"></td>
-            </tr>
-        </table>
-    </td>
+    <th>#</th>
+    <th>Description</th>
+    <th>Price</th>
+    <th>Qty</th>
+    <th>Total</th>
 </tr>
-</table>
+</thead>
 
-<div style="margin-top:30px;text-align:center">
-    <button onclick="window.print()">Print Invoice</button>
-</div>
+<tbody></tbody>
+
+<tfoot>
+<tr>
+<td colspan="4" align="right"><strong>Grand Total</strong></td>
+<td id="printGrand"></td>
+</tr>
+<tr><td colspan="5" id="printWords"></td></tr>
+<tr><td colspan="5" class="print-comments" id="printComments"></td></tr>
+</tfoot>
+</table>
 
 </div>
 
 <script>
-function pad(n){ return n.toString().padStart(2,'0'); }
+/* ===== Invoice No MMDDYYYYSS ===== */
+function pad(n){return n.toString().padStart(2,"0")}
+const d=new Date();
+invoiceNo.textContent =
+    pad(d.getMonth()+1)+pad(d.getDate())+d.getFullYear()+pad(d.getSeconds());
+invoiceDate.value = d.toISOString().split("T")[0];
 
-function generateInvoiceNo(){
-    const d=new Date();
-    return `${d.getFullYear()}-${pad(d.getMonth()+1)}${pad(d.getDate())}-${pad(d.getHours())}${pad(d.getMinutes())}${pad(d.getSeconds())}`;
+/* ===== Number to Words ===== */
+function numberToWords(n){
+ const a=["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten",
+ "Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+ const b=["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+ if(n<20) return a[n];
+ if(n<100) return b[Math.floor(n/10)]+" "+a[n%10];
+ if(n<1000) return a[Math.floor(n/100)]+" Hundred "+numberToWords(n%100);
+ return numberToWords(Math.floor(n/1000))+" Thousand "+numberToWords(n%1000);
 }
 
-window.onload=function(){
-    invoiceNo.textContent=generateInvoiceNo();
-    const t=new Date();
-    billDate.value=t.toISOString().split('T')[0];
-    t.setDate(t.getDate()+7);
-    dueDate.value=t.toISOString().split('T')[0];
-}
-
-/* NUMBER TO WORDS WITH PAISA */
-function numberToWords(amount){
-    const ones=["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten",
-                "Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
-    const tens=["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
-
-    function convert(n){
-        if(n<20) return ones[n];
-        if(n<100) return tens[Math.floor(n/10)] + (n%10?" "+ones[n%10]:"");
-        if(n<1000) return ones[Math.floor(n/100)]+" Hundred"+(n%100?" "+convert(n%100):"");
-        if(n<1000000) return convert(Math.floor(n/1000))+" Thousand"+(n%1000?" "+convert(n%1000):"");
-        return "";
-    }
-
-    let taka = Math.floor(amount);
-    let paisa = Math.round((amount - taka) * 100);
-
-    let words = convert(taka) + " Taka";
-    if(paisa > 0) words += " and " + convert(paisa) + " Paisa";
-
-    return words + " Only";
-}
-
+/* ===== Rows ===== */
 function addRow(){
-    let r=invoiceTable.tBodies[0].insertRow();
-    r.innerHTML=`
-    <td class="sl"></td>
-    <td><textarea placeholder="Item description"></textarea></td>
-    <td><div class="currency"><span>৳</span><input type="number" class="price" oninput="calc()"></div></td>
-    <td><input type="number" class="qty" oninput="calc()"></td>
-    <td><div class="currency"><span>৳</span><input class="row-total" readonly></div></td>
-    <td class="action-col"><button class="remove-btn" onclick="removeRow(this)">X</button></td>`;
-    updateSerial();
+ const tr=document.createElement("tr");
+ tr.innerHTML=`
+<td></td>
+<td><textarea class="desc"></textarea></td>
+<td><input class="price" type="number" oninput="calc()"></td>
+<td><input class="qty" type="number" oninput="calc()"></td>
+<td><input class="rowTotal" readonly></td>
+<td><button onclick="this.closest('tr').remove();calc()">X</button></td>`;
+ screenTable.querySelector("tbody").appendChild(tr);
+ renumber();
 }
 
-function removeRow(btn){
-    btn.closest("tr").remove();
-    updateSerial();
-    calc();
-}
-
-function updateSerial(){
-    document.querySelectorAll(".sl").forEach((s,i)=>s.textContent=i+1);
+function renumber(){
+ document.querySelectorAll("#screenTable tbody tr").forEach((r,i)=>r.cells[0].innerText=i+1);
 }
 
 function calc(){
-    let total=0;
-    document.querySelectorAll(".price").forEach((p,i)=>{
-        const q=document.querySelectorAll(".qty")[i].value||0;
-        const t=p.value*q;
-        document.querySelectorAll(".row-total")[i].value=t.toFixed(2);
-        total+=t;
-    });
-
-    grandTotal.textContent = total.toFixed(2);
-    grandWords.textContent = "In Words: " + numberToWords(total);
+ let sum=0;
+ document.querySelectorAll(".price").forEach((p,i)=>{
+  const q=document.querySelectorAll(".qty")[i].value||0;
+  const t=p.value*q;
+  document.querySelectorAll(".rowTotal")[i].value=t.toFixed(2);
+  sum+=t;
+ });
+ screenGrand.textContent=sum.toFixed(2);
+ screenWords.textContent="In Words: "+numberToWords(Math.floor(sum))+" Only";
 }
+
+function preparePrint(){
+ const pb=printTable.querySelector("tbody");
+ pb.innerHTML="";
+ document.querySelectorAll("#screenTable tbody tr").forEach((r,i)=>{
+  const tr=document.createElement("tr");
+  tr.innerHTML=`
+<td>${i+1}</td>
+<td>${r.querySelector(".desc").value}</td>
+<td>${r.querySelector(".price").value}</td>
+<td>${r.querySelector(".qty").value}</td>
+<td>${r.querySelector(".rowTotal").value}</td>`;
+  pb.appendChild(tr);
+ });
+ printGrand.textContent=screenGrand.textContent;
+ printWords.textContent=screenWords.textContent;
+ printComments.textContent="Comments:\n"+comments.value;
+ window.print();
+}
+
+/* init */
+addRow();
 </script>
 
 </body>
