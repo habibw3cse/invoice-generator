@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Money Receipt</title>
+
+<style>
+:root{
+    --brand-color:#0a2a66;
+    --light-bg:#eef2f6;
+}
+
+*{ box-sizing:border-box; }
+
+body{
+    font-family: Arial, sans-serif;
+    background:#f2f2f2;
+    padding:20px;
+}
+
+.receipt{
+    max-width:700px;
+    margin:auto;
+    background:#fff;
+    border:2px solid #000;
+}
+
+/* ================= HEADER ================= */
+.header{
+    background:var(--light-bg);
+    padding:20px;
+}
+
+.header-top{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    align-items:center;
+}
+
+/* LOGO TEXT */
+.logo-text{
+    color:var(--brand-color);
+}
+
+.logo-text .htm{
+    font-size:48px;
+    font-weight:900;
+}
+
+.logo-text .technology{
+    font-size:26px;
+    font-weight:700;
+    margin-top:-6px;
+}
+
+.logo-text .slogan{
+    font-size:14px;
+    margin-top:4px;
+    color:#555;
+}
+
+/* COMPANY INFO */
+.company-info{
+    text-align:right;
+    font-size:14px;
+    line-height:1.6;
+}
+
+/* ================= TITLE ================= */
+.receipt-title{
+    text-align:center;
+    font-size:26px;
+    font-weight:bold;
+    padding:8px 0;
+    border-top:2px solid #000;
+    border-bottom:2px solid #000;
+}
+
+/* ================= BODY ================= */
+.content{
+    padding:25px;
+    font-size:14px;
+}
+
+.meta{
+    display:flex;
+    justify-content:space-between;
+    margin-bottom:15px;
+}
+
+.section{
+    margin-bottom:12px;
+}
+
+.label{
+    font-weight:bold;
+}
+
+/* INPUTS */
+input, select{
+    font-size:14px;
+    padding:4px;
+}
+
+/* PRINT TEXT */
+.print-text{
+    display:none;
+}
+
+/* ================= SIGNATURE ================= */
+.signature{
+    display:flex;
+    justify-content:flex-end; /* RIGHT SIDE ONLY */
+    margin-top:50px;
+}
+
+.sign-box{
+    width:45%;
+    text-align:center;
+}
+
+.sign-line{
+    border-top:1px solid #000;
+    padding-top:5px;
+}
+
+/* ================= PRINT ================= */
+@media print{
+    body{
+        background:#fff;
+        padding:0;
+    }
+
+    input, select{
+        display:none;
+    }
+
+    .print-text{
+        display:inline;
+    }
+
+    .print-btn{
+        display:none;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="receipt">
+
+<!-- ================= HEADER ================= -->
+<div class="header">
+    <div class="header-top">
+
+        <div class="logo-text">
+            <div class="htm">HTM</div>
+            <div class="technology">TECHNOLOGY</div>
+            <div class="slogan">streamlined. secure. successful</div>
+        </div>
+
+        <div class="company-info">
+            Halishahar R/A, Sonali Tower, 6th Floor<br>
+            Chattogram, Bangladesh<br>
+            Phone: +8801820199876<br>
+            htmtechnologyltd@gmail.com
+        </div>
+
+    </div>
+</div>
+
+<div class="receipt-title">MONEY RECEIPT</div>
+
+<!-- ================= CONTENT ================= -->
+<div class="content">
+
+<div class="meta">
+    <div><strong>Receipt No:</strong> <span id="receiptNo"></span></div>
+    <div><strong>Date:</strong> <span id="receiptDate"></span></div>
+</div>
+
+<div class="section">
+    <span class="label">Received From:</span>
+    <input type="text" value="Customer Name">
+    <span class="print-text">Customer Name</span>
+</div>
+
+<div class="section">
+    <span class="label">Amount:</span>
+    ৳ <input type="number" id="amount" value="0">
+    <span class="print-text" id="amountPrint"></span>
+</div>
+
+<div class="section">
+    <span class="label">In Words:</span>
+    <span id="amountWords"></span>
+</div>
+
+<div class="section">
+    <span class="label">Payment Method:</span>
+
+    <select id="paymentMethod">
+        <option>Cash</option>
+        <option>Bank Transfer</option>
+        <option>Mobile Banking</option>
+        <option>Cheque</option>
+    </select>
+
+    <span class="print-text" id="paymentPrint"></span>
+</div>
+
+<div class="section">
+    <span class="label">Purpose:</span>
+
+    <input type="text" id="purpose" value="Invoice Payment">
+    <span class="print-text" id="purposePrint"></span>
+</div>
+
+<!-- ================= SIGNATURE ================= -->
+<div class="signature">
+    <div class="sign-box">
+        <div class="sign-line">Received By</div>
+    </div>
+</div>
+
+</div>
+</div>
+
+<!-- ================= PRINT BUTTON ================= -->
+<div class="print-btn" style="text-align:center;margin-top:20px;">
+    <button onclick="window.print()">Print Receipt</button>
+</div>
+
+<script>
+function pad(n){ return n.toString().padStart(2,"0"); }
+const d=new Date();
+
+receiptNo.textContent =
+    "MR-" + pad(d.getDate()) + pad(d.getMonth()+1) + d.getFullYear() + pad(d.getSeconds());
+receiptDate.textContent = d.toLocaleDateString();
+
+/* NUMBER TO WORDS */
+function numberToWords(n){
+ const a=["","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten",
+ "Eleven","Twelve","Thirteen","Fourteen","Fifteen","Sixteen","Seventeen","Eighteen","Nineteen"];
+ const b=["","","Twenty","Thirty","Forty","Fifty","Sixty","Seventy","Eighty","Ninety"];
+ if(n<20) return a[n];
+ if(n<100) return b[Math.floor(n/10)]+" "+a[n%10];
+ if(n<1000) return a[Math.floor(n/100)]+" Hundred "+numberToWords(n%100);
+ if(n<1000000) return numberToWords(Math.floor(n/1000))+" Thousand "+numberToWords(n%1000);
+ return "";
+}
+
+amount.addEventListener("input",()=>{
+    amountWords.textContent = numberToWords(amount.value) + " Taka Only";
+    amountPrint.textContent = amount.value;
+});
+
+/* BEFORE PRINT */
+window.onbeforeprint = ()=>{
+    paymentPrint.textContent = paymentMethod.value;
+    purposePrint.textContent = purpose.value;
+};
+</script>
+
+</body>
+</html>
