@@ -174,8 +174,9 @@ input, select{
 
 <div class="section">
     <span class="label">Received From:</span>
-    <input type="text" value="Customer Name">
-    <span class="print-text">Customer Name</span>
+   <input type="text" id="customerName" value="Customer Name">
+<span class="print-text" id="customerPrint"></span>
+
 </div>
 
 <div class="section">
@@ -250,10 +251,13 @@ amount.addEventListener("input",()=>{
 });
 
 /* BEFORE PRINT */
+
 window.onbeforeprint = ()=>{
+    customerPrint.textContent = customerName.value;
     paymentPrint.textContent = paymentMethod.value;
     purposePrint.textContent = purpose.value;
 };
+
 </script>
 
 </body>
