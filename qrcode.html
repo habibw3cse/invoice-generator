@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HTM QR Code</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+body{
+    text-align:center;
+    font-family:Arial;
+    padding-top:50px;
+}
+
+.qr-container{
+    position:relative;
+    width:260px;
+    margin:auto;
+}
+
+.logo{
+    position:absolute;
+    top:50%;
+    left:50%;
+    transform:translate(-50%, -50%);
+    width:70px;
+    height:70px;
+    background:white;
+    padding:6px;
+    border-radius:12px;
+}
+</style>
+</head>
+
+<body>
+
+<h2>Scan QR Code</h2>
+
+<div class="qr-container">
+    <div id="qrcode"></div>
+    <img src="HTMTECHNOLOGY-Cover.jpeg" class="logo">
+</div>
+
+<script>
+new QRCode(document.getElementById("qrcode"), {
+    text: "https://habibw3cse.github.io/invoice-generator/qrpage.html",
+    width: 260,
+    height: 260
+});
+</script>
+
+</body>
+</html>
