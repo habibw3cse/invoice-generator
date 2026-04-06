@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PS Sports QR Code</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+body{
+    text-align:center;
+    font-family:Arial;
+    padding-top:50px;
+}
+
+.qr-container{
+    position:relative;
+    width:260px;
+    margin:auto;
+}
+
+</style>
+</head>
+
+<body>
+
+<h2>Scan QR Code</h2>
+
+<div class="qr-container">
+    <div id="qrcode"></div>
+    </div>
+
+<script>
+new QRCode(document.getElementById("qrcode"), {
+    text: "https://habibw3cse.github.io/invoice-generator/psqrpage.html",
+    width: 260,
+    height: 260
+});
+</script>
+
+</body>
+</html>
